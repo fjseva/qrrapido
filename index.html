@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRRapido.es - Generador de Códigos QR Gratis</title>
+    <meta name="description" content="Crea códigos QR gratis en segundos. Personaliza colores, tamaño y descarga en alta calidad. Para URLs, WiFi, vCard y más.">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            font-size: 3em;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .tagline {
+            color: #666;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .color-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .color-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 45px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .size-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .size-option {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .size-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .size-option.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .qr-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        #qrcode {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        #qrcode canvas {
+            display: block;
+        }
+
+        .placeholder {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+
+        .placeholder-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ad-space {
+            background: #f5f5f5;
+            border: 2px dashed #ddd;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .feature {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: #666;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #5568d3;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .color-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dynamic-fields {
+            display: none;
+        }
+
+        .dynamic-fields.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                <h1>QRRapido.es</h1>
+            </div>
+            <p class="tagline">Crea códigos QR personalizados en segundos - Gratis y sin registro</p>
+        </div>
+
+        <div class="ad-space">
+            [ Espacio Publicitario - 728x90 ]<br>
+            Google AdSense
+        </div>
+
+        <div class="main-content">
+            <div class="panel">
+                <h2>🎨 Personaliza tu QR</h2>
+                
+                <div class="form-group">
+                    <label for="qrType">Tipo de código QR</label>
+                    <select id="qrType">
+                        <option value="url">🔗 URL / Sitio Web</option>
+                        <option value="text">📝 Texto</option>
+                        <option value="email">📧 Email</option>
+                        <option value="phone">📱 Teléfono</option>
+                        <option value="sms">💬 SMS</option>
+                        <option value="wifi">📶 WiFi</option>
+                        <option value="vcard">👤 vCard (Contacto)</option>
+                    </select>
+                </div>
+
+                <!-- Campos dinámicos según el tipo -->
+                <div id="urlField" class="dynamic-fields active">
+                    <div class="form-group">
+                        <label for="url">URL del sitio web</label>
+                        <input type="url" id="url" placeholder="https://ejemplo.com">
+                    </div>
+                </div>
+
+                <div id="textField" class="dynamic-fields">
+                    <div class="form-group">
+                        <label for="text">Texto</label>
+                        <textarea id="text" placeholder="Escribe tu texto aquí..."></textarea>
+                    </div>
+                </div>
+
+                <div id="emailField" class="dynamic-fields">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailSubject">Asunto (opcional)</label>
+                        <input type="text" id="emailSubject" placeholder="Asunto del email">
+                    </div>
+                </div>
+
+                <div id="phoneField" class="dynamic-fields">
+                    <div class="form-group">
+                        <label for="phone">Número de teléfono</label>
+                        <input type="tel" id="phone" placeholder="+34 600 000 000">
+                    </div>
+                </div>
+
+                <div id="smsField" class="dynamic-fields">
+                    <div class="form-group">
+                        <label for="smsPhone">Número de teléfono</label>
+                        <input type="tel" id="smsPhone" placeholder="+34 600 000 000">
+                    </div>
+                    <div class="form-group">
+                        <label for="smsMessage">Mensaje</label>
+                        <textarea id="smsMessage" placeholder="Mensaje del SMS..."></textarea>
+                    </div>
+                </div>
+
+                <div id="wifiField" class="dynamic-fields">
+                    <div class="form-group">
+                        <label for="wifiSSID">Nombre de la red (SSID)</label>
+                        <input type="text" id="wifiSSID" placeholder="Mi_WiFi">
+                    </div>
+                    <div class="form-group">
+                        <label for="wifiPassword">Contraseña</label>
+                        <input type="text" id="wifiPassword" placeholder="contraseña123">
+                    </div>
+                    <div class="form-group">
+                        <label for="wifiSecurity">Tipo de seguridad</label>
+                        <select id="wifiSecurity">
+                            <option value="WPA">WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">Sin contraseña</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="vcardField" class="dynamic-fields">
+                    <div class="form-group">
+                        <label for="vcardName">Nombre completo</label>
+                        <input type="text" id="vcardName" placeholder="Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label for="vcardPhone">Teléfono</label>
+                        <input type="tel" id="vcardPhone" placeholder="+34 600 000 000">
+                    </div>
+                    <div class="form-group">
+                        <label for="vcardEmail">Email</label>
+                        <input type="email" id="vcardEmail" placeholder="juan@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="vcardCompany">Empresa (opcional)</label>
+                        <input type="text" id="vcardCompany" placeholder="Mi Empresa SL">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Colores</label>
+                    <div class="color-inputs">
+                        <div class="color-input-group">
+                            <input type="color" id="colorDark" value="#000000">
+                            <span>QR</span>
+                        </div>
+                        <div class="color-input-group">
+                            <input type="color" id="colorLight" value="#ffffff">
+                            <span>Fondo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tamaño</label>
+                    <div class="size-selector">
+                        <div class="size-option" data-size="200">Pequeño<br>200px</div>
+                        <div class="size-option active" data-size="300">Medio<br>300px</div>
+                        <div class="size-option" data-size="400">Grande<br>400px</div>
+                    </div>
+                </div>
+
+                <button class="btn" id="generateBtn">⚡ Generar QR</button>
+            </div>
+
+            <div class="panel">
+                <h2>👁️ Vista Previa</h2>
+                <div class="qr-preview" > 
+                    <div class="placeholder" id="qrcode">
+                        <div class="placeholder-icon">📱</div>
+                        <p>Tu código QR aparecerá aquí</p>
+                        <p style="font-size: 14px; margin-top: 10px;">Completa los campos y haz clic en "Generar QR"</p>
+                    </div>
+                </div>
+                <button class="btn" id="downloadBtn" disabled>⬇️ Descargar QR</button>
+            </div>
+        </div>
+
+        <div class="ad-space">
+            [ Espacio Publicitario - 728x90 ]<br>
+            Google AdSense
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3>100% Personalizable</h3>
+                <p>Elige colores y tamaños que se ajusten a tu marca</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3>Súper Rápido</h3>
+                <p>Genera tu código QR en menos de 1 segundo</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h3>100% Privado</h3>
+                <p>Todo se procesa en tu navegador. Sin registro.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📱</div>
+                <h3>Múltiples Tipos</h3>
+                <p>URL, WiFi, Email, Teléfono, vCard y más</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>QRRapido.es</strong> - Generador de códigos QR gratis © 2025</p>
+            <div class="footer-links">
+                <a href="#privacidad">Política de Privacidad</a>
+                <a href="#terminos">Términos y Condiciones</a>
+                <a href="#cookies">Política de Cookies</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let qrcode = null;
+        let currentSize = 300;
+
+        // Cambiar tipo de QR
+        document.getElementById('qrType').addEventListener('change', function() {
+            document.querySelectorAll('.dynamic-fields').forEach(field => {
+                field.classList.remove('active');
+            });
+            
+            const selectedType = this.value;
+            const fieldMap = {
+                'url': 'urlField',
+                'text': 'textField',
+                'email': 'emailField',
+                'phone': 'phoneField',
+                'sms': 'smsField',
+                'wifi': 'wifiField',
+                'vcard': 'vcardField'
+            };
+            
+            document.getElementById(fieldMap[selectedType]).classList.add('active');
+        });
+
+        // Selector de tamaño
+        document.querySelectorAll('.size-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.size-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                currentSize = parseInt(this.dataset.size);
+            });
+        });
+
+        // Generar QR
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const qrType = document.getElementById('qrType').value;
+            let qrData = '';
+
+            // Obtener datos según el tipo
+            switch(qrType) {
+                case 'url':
+                    qrData = document.getElementById('url').value;
+                    if (!qrData) {
+                        alert('Por favor, introduce una URL');
+                        return;
+                    }
+                    break;
+                case 'text':
+                    qrData = document.getElementById('text').value;
+                    if (!qrData) {
+                        alert('Por favor, introduce un texto');
+                        return;
+                    }
+                    break;
+                case 'email':
+                    const email = document.getElementById('email').value;
+                    const subject = document.getElementById('emailSubject').value;
+                    if (!email) {
+                        alert('Por favor, introduce un email');
+                        return;
+                    }
+                    qrData = `mailto:${email}${subject ? '?subject=' + encodeURIComponent(subject) : ''}`;
+                    break;
+                case 'phone':
+                    const phone = document.getElementById('phone').value;
+                    if (!phone) {
+                        alert('Por favor, introduce un teléfono');
+                        return;
+                    }
+                    qrData = `tel:${phone}`;
+                    break;
+                case 'sms':
+                    const smsPhone = document.getElementById('smsPhone').value;
+                    const smsMessage = document.getElementById('smsMessage').value;
+                    if (!smsPhone) {
+                        alert('Por favor, introduce un teléfono');
+                        return;
+                    }
+                    qrData = `sms:${smsPhone}${smsMessage ? '?body=' + encodeURIComponent(smsMessage) : ''}`;
+                    break;
+                case 'wifi':
+                    const ssid = document.getElementById('wifiSSID').value;
+                    const password = document.getElementById('wifiPassword').value;
+                    const security = document.getElementById('wifiSecurity').value;
+                    if (!ssid) {
+                        alert('Por favor, introduce el nombre de la red WiFi');
+                        return;
+                    }
+                    qrData = `WIFI:T:${security};S:${ssid};P:${password};;`;
+                    break;
+                case 'vcard':
+                    const name = document.getElementById('vcardName').value;
+                    const vcardPhone = document.getElementById('vcardPhone').value;
+                    const vcardEmail = document.getElementById('vcardEmail').value;
+                    const company = document.getElementById('vcardCompany').value;
+                    if (!name) {
+                        alert('Por favor, introduce un nombre');
+                        return;
+                    }
+                    qrData = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\n${vcardPhone ? 'TEL:' + vcardPhone + '\n' : ''}${vcardEmail ? 'EMAIL:' + vcardEmail + '\n' : ''}${company ? 'ORG:' + company + '\n' : ''}END:VCARD`;
+                    break;
+            }
+
+            // Limpiar QR anterior
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = '';
+            
+            // Ocultar placeholder
+            document.querySelector('.placeholder').style.display = 'none';
+            qrcodeDiv.style.display = 'block';
+
+            // Obtener colores
+            const colorDark = document.getElementById('colorDark').value;
+            const colorLight = document.getElementById('colorLight').value;
+
+            // Generar nuevo QR
+            qrcode = new QRCode(qrcodeDiv, {
+                text: qrData,
+                width: currentSize,
+                height: currentSize,
+                colorDark: colorDark,
+                colorLight: colorLight,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Habilitar botón de descarga
+            document.getElementById('downloadBtn').disabled = false;
+        });
+
+        // Descargar QR
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                const url = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = 'qrrapido-codigo.png';
+                link.href = url;
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
